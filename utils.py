@@ -8,3 +8,8 @@ def log(title:str, data:str) -> bool:
 
     # Log some data
     logging.info(f"{title}: {data}")
+
+'''
+    Tasks: 
+        1. Check the possibilities
+'''

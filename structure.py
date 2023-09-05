@@ -22,14 +22,12 @@ class Node():
         return f"ID:{self.id} - Owner:{self.owner} - Troops:{self.troops}"
 
 
-class Data():
-    def __init__(self, game:Game):
+class Team():
+    def __init__(self):
         self.id = 0
         self.free_troops = 0
         self.state = 0
         self.turn_number = 0
-        # ----- First update -----
-        self.update(game)
 
     def __str__(self):
         # ----- Output as string -----
@@ -44,17 +42,15 @@ class Data():
 
 
 class Graph(Node):
-    def __init__(self, game:Game):
+    def __init__(self):
         MAXNODE = 107
         self.node = [Node() for i in range(MAXNODE)]
         self.nodes = []
         self.strategic_nodes = []
-        # ----- First update -----
-        self.update(game)
     
     def __str__(self):
         # ----- Output as string -----
-        return f"Strategics:{self.strategic_nodes} - Nodes:{self.nodes}"
+        return f" Number of nodes:{len(self.nodes)} - Strategics:{self.strategic_nodes}"
 
     def update(self, game:Game):
         # ----- Get new data -----
@@ -77,3 +73,9 @@ class Graph(Node):
         for (i, score) in self.strategic_nodes:
             self.node[i].is_strategic = True
             self.node[i].score = score
+        # ----- Custom ordering data -----
+        '''
+            Tasks: 
+                1. sorting strategic_nodes with specified formula
+                2. add my_node
+        '''
