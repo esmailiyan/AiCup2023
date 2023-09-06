@@ -22,6 +22,15 @@ class Node():
         return f"ID:{self.id} - Owner:{self.owner} - Troops:{self.troops}"
 
 
+# class Situation():
+#     def __init__(self, attacker_damage:int, defendant_damages:int, probability:float):
+#         self.Attacker_damage = attacker_damage
+#         self.Defendant_damages = defendant_damages
+#         self.Probability = probability
+
+#     def __str__(self) -> str:
+#         return f"Attacker damage:{self.Attacker_damage:<3} | Defendant damages:{self.Defendant_damages:<3} | Probability:{self.Probability:.4f}"
+
 class Team():
     def __init__(self):
         self.id = 0

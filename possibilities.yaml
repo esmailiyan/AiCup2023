@@ -1,0 +1,50 @@
+---------------------------
+Attack dice: 3
+Defence dice: 2
+States:
+        | Attacker | defencer | Probability
+damage  |    -2    |     0    |   0.2926
+damage  |    -1    |    -1    |   0.3358
+damage  |     0    |    -2    |   0.3717
+---------------------------
+---------------------------
+Attack dice: 3
+Defence dice: 1
+States:
+		| Attacker | defencer | Probability
+damage  |    -1    |     0    |   0.3403
+damage  |     0    |    -1    |   0.6597
+---------------------------
+---------------------------
+Attack dice: 2
+Defence dice: 2
+States:
+		| Attacker | defencer | Probability
+damage  |    -2    |     0    |   0.4483
+damage  |    -1    |    -1    |   0.3241
+damage  |     0    |    -2    |   0.2276
+---------------------------
+---------------------------
+Attack dice: 2
+Defence dice: 1
+States:
+		| Attacker | defencer | Probability
+damage  |    -1    |     0    |   0.4213
+damage  |     0    |    -1    |   0.5787
+---------------------------
+---------------------------
+Attack dice: 1
+Defence dice: 2
+States:
+		| Attacker | defencer | Probability
+damage  |    -1    |     0    |   0.7454
+damage  |     0    |    -1    |   0.2546
+---------------------------
+---------------------------
+Attack dice: 1
+Defence dice: 1
+States:
+		| Attacker | defencer | Probability
+damage  |    -1    |     0    |   0.5833
+damage  |     0    |    -1    |   0.4167
+---------------------------
