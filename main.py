@@ -12,8 +12,9 @@ def initializer(game: Game):
     graph.update(game)
     # ----- Write your code here -----
     '''
-        Tasks: 
-            1. Write Algorithm
+        Tasks:
+            1. Write algorithm of select strategic nodes
+            2. Write algorithm of initial location of troops
     '''
 
 
@@ -23,5 +24,8 @@ def turn(game: Game):
     # ----- Write your code here -----
     '''
         Tasks: 
-            1. Write Algorithm
+            1. Write algorithm of locating new troops
+            2. Write algorithm of attack
+            3. Write algorithm of move troops
+            4. Write algorithm of transformation the defense troops
     '''

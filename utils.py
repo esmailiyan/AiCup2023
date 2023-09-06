@@ -11,5 +11,5 @@ def log(title:str, data:str) -> bool:
 
 '''
     Tasks: 
-        1. Check the possibilities
+        1. Write the function of check the possibilities
 '''
