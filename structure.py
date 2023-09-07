@@ -55,11 +55,11 @@ class Graph(Node):
         MAXNODE = 107
         self.node = [Node() for i in range(MAXNODE)]
         self.nodes = []
-        self.strategic_nodes = []
+        self.borj = []
     
     def __str__(self):
         # ----- Output as string -----
-        return f" Number of nodes:{len(self.nodes)} - Strategics:{self.strategic_nodes}"
+        return f" Number of nodes:{len(self.nodes)} - Strategics:{self.borj}"
 
     def update(self, game:Game):
         # ----- Get new data -----
@@ -72,14 +72,14 @@ class Graph(Node):
         _fort_troops = game.get_number_of_fort_troops()
         # ----- Update data -----
         self.nodes = _nodes
-        self.strategic_nodes = list(zip(_strategic, _score))
+        self.borj = list(zip(_strategic, _score))
         for i in _nodes:
             self.node[i].id = i
             self.node[i].owner = _owner[str(i)]
             self.node[i].adj = _adj[str(i)]
             self.node[i].troops = _troops[str(i)]
             self.node[i].fort_troops = _fort_troops[str(i)]
-        for (i, score) in self.strategic_nodes:
+        for (i, score) in self.borj:
             self.node[i].is_strategic = True
             self.node[i].score = score
         # ----- Custom ordering data -----
