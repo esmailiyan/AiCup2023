@@ -12,6 +12,7 @@ class Node():
         self.id = 0
         self.owner = -1 
         self.adj = []
+        self.degree = 0
         self.is_strategic = False
         self.score = 0       
         self.troops = 0
@@ -77,14 +78,9 @@ class Graph(Node):
             self.node[i].id = i
             self.node[i].owner = _owner[str(i)]
             self.node[i].adj = _adj[str(i)]
+            self.node[i].degree = len(_adj[str(i)])
             self.node[i].troops = _troops[str(i)]
             self.node[i].fort_troops = _fort_troops[str(i)]
         for (i, score) in self.borj:
             self.node[i].is_strategic = True
             self.node[i].score = score
-        # ----- Custom ordering data -----
-        '''
-            Tasks: 
-                1. sorting strategic_nodes with specified formula
-                2. add my_node
-        '''
