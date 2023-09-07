@@ -20,7 +20,7 @@ class Node():
 
     def __str__(self):
         # ----- Output as string -----
-        return f"ID:{self.id} - Owner:{self.owner} - Troops:{self.troops}"
+        return f"Node:{self.id}\n- owner:{self.owner}\n- troops:{self.troops}\n"
 
 
 # class Situation():
@@ -41,7 +41,7 @@ class Team():
 
     def __str__(self):
         # ----- Output as string -----
-        return f"id:{self.id} - turn_number:{self.turn_number} - State:{self.state} - free_troops:{self.free_troops}"
+        return f"Team:\n- id:{self.id}\n- state:{self.state}\n- turn_number:{self.turn_number}\n- free_troops:{self.free_troops}\n"
 
     def update(self, game:Game):
         # ----- Updating data -----
@@ -53,14 +53,13 @@ class Team():
 
 class Graph(Node):
     def __init__(self):
-        MAXNODE = 107
-        self.node = [Node() for i in range(MAXNODE)]
+        self.node = []
         self.nodes = []
         self.borj = []
     
     def __str__(self):
         # ----- Output as string -----
-        return f" Number of nodes:{len(self.nodes)} - Strategics:{self.borj}"
+        return f"Graph:\n- number of nodes:{len(self.nodes)}\n- strategics:{self.borj}\n"
 
     def update(self, game:Game):
         # ----- Get new data -----
@@ -73,6 +72,7 @@ class Graph(Node):
         _fort_troops = game.get_number_of_fort_troops()
         # ----- Update data -----
         self.nodes = _nodes
+        self.node = [Node() for i in range(len(_nodes))]
         self.borj = list(zip(_strategic, _score))
         for i in _nodes:
             self.node[i].id = i
