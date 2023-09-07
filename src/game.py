@@ -9,11 +9,8 @@ class Game:
     
     def handel_output(self, response):
         code = response.status_code
-        if 200<=code<300:
+        if 200<=code<300 or 'error' in response.json():
             return eval(response.text)
-        if 'error' in response.json():
-            print(response.json()['error'])
-            raise Exception(response.json()['error'])
         else:
             print("unknown error")
             raise Exception("unknown error")
