@@ -1,6 +1,12 @@
 import os
 import logging
 from structure import Graph, Team
+import networkx as nx
+import matplotlib.pyplot as plt
+
+draw_flag = True
+G = nx.Graph()
+pos = None
 
 def log(data:str) -> bool:
     # Set the logging configuration
@@ -55,6 +61,38 @@ def count_around_enemy(v:int, graph: Graph, team: Team) -> int:
         if graph.node[u].owner not in [-1, team.id]:
             counter += 1
     return counter
+
+def draw_graph(graph: Graph, team: Team):
+    global draw_flag, g, pos
+
+    if draw_flag:
+        for i in graph.nodes:
+            G.add_node(i)
+            for j in graph.node[i].adj:
+                G.add_edge(i, j) 
+            draw_flag = False
+        pos = nx.spring_layout(G)
+        
+    node_colors = []
+    for i in G.nodes():
+        if graph.node[i].owner == team.id:
+            if graph.node[i].is_strategic:
+                node_colors.append("red")
+            else:
+                node_colors.append("green")
+        elif graph.node[i].owner == -1:
+            if graph.node[i].is_strategic:
+                node_colors.append("orange")
+            else:
+                node_colors.append("blue")
+        else:
+            if graph.node[i].is_strategic:
+                node_colors.append("black")
+            else:
+                node_colors.append("gray")
+    nx.draw(G, pos, with_labels=True, node_size=400, node_color=node_colors, font_size=12, font_color='black', font_weight='normal')
+    plt.title("Undirected Graph")
+    plt.show()
 
 '''
     Tasks: 
