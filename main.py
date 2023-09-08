@@ -1,7 +1,7 @@
 import random
 from src.game import Game
 from structure import State, Team, Graph
-from utils import log, sum_around_score, min_around_enemy, max_around_enemy, count_around_freind, count_around_enemy
+from utils import log, sum_around_score, min_around_enemy, max_around_enemy, count_around_freind, count_around_enemy, draw_graph
 
 flag = False
 team = Team()
@@ -53,11 +53,15 @@ def initializer(game: Game):
         if v in free_nodes:
             response = game.put_one_troop(v)
             log(f"putting_one_troop on {v}, " + str(response) + '\n')
+            graph.update(game)
+            draw_graph(graph, team)
             return
     
     for v in free_nodes:
         response = game.put_one_troop(v)
         log(f"putting_one_troop on {v}, " + str(response) + '\n')
+        graph.update(game)
+        draw_graph(graph, team)
         return
 
     for v in my_nodes:
@@ -65,16 +69,22 @@ def initializer(game: Game):
             if graph.node[v].troops + graph.node[v].fort_troops < max_around_enemy(v, graph, team)[0]:
                 response = game.put_one_troop(v)
                 log(f"putting_one_troop on {v}, " + str(response) + '\n')
+                graph.update(game)
+                draw_graph(graph, team)
                 return
         else: 
             if count_around_enemy(v, graph, team) != 0:
                 response = game.put_one_troop(v)
                 log(f"putting_one_troop on {v}, " + str(response) + '\n')
+                graph.update(game)
+                draw_graph(graph, team)
                 return
     
     for v in my_nodes:
         response = game.put_one_troop(v)
         log(f"putting_one_troop on {v}, " + str(response) + '\n')
+        graph.update(game)
+        draw_graph(graph, team)
         return
 
 def turn(game: Game):
