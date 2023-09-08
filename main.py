@@ -40,6 +40,7 @@ def initializer(game: Game):
     # log(team)
     # log(graph)
     # log("my_nodes: " + str(my_nodes) + '\n')
+    # for i in my_nodes:  log(str(graph.node[i]))
     # log("free_nodes: " + str(free_nodes) + '\n')
     # log("enemy_nodes: " + str(enemy_nodes) + '\n')
     # log("my_neighbors: " + str(my_neighbors))
@@ -52,14 +53,14 @@ def initializer(game: Game):
     for v in borjs:
         if v in free_nodes:
             response = game.put_one_troop(v)
-            log(f"putting_one_troop on {v}, " + str(response) + '\n')
+            log(f"putting_one_troop on {v}, " + str(response))
             graph.update(game)
             draw_graph(graph, team)
             return
     
     for v in free_nodes:
         response = game.put_one_troop(v)
-        log(f"putting_one_troop on {v}, " + str(response) + '\n')
+        log(f"putting_one_troop on {v}, " + str(response))
         graph.update(game)
         draw_graph(graph, team)
         return
@@ -68,21 +69,21 @@ def initializer(game: Game):
         if graph.node[v].is_strategic:
             if graph.node[v].troops + graph.node[v].fort_troops < max_around_enemy(v, graph, team)[0]:
                 response = game.put_one_troop(v)
-                log(f"putting_one_troop on {v}, " + str(response) + '\n')
+                log(f"putting_one_troop on {v}, " + str(response))
                 graph.update(game)
                 draw_graph(graph, team)
                 return
         else: 
             if count_around_enemy(v, graph, team) != 0:
                 response = game.put_one_troop(v)
-                log(f"putting_one_troop on {v}, " + str(response) + '\n')
+                log(f"putting_one_troop on {v}, " + str(response))
                 graph.update(game)
                 draw_graph(graph, team)
                 return
     
     for v in my_nodes:
         response = game.put_one_troop(v)
-        log(f"putting_one_troop on {v}, " + str(response) + '\n')
+        log(f"putting_one_troop on {v}, " + str(response))
         graph.update(game)
         draw_graph(graph, team)
         return
