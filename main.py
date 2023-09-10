@@ -54,38 +54,39 @@ def initializer(game: Game):
         if v in free_nodes:
             response = game.put_one_troop(v)
             log(f"putting_one_troop on {v}, " + str(response))
-            graph.update(game)
-            draw_graph(graph, team)
+            # graph.update(game)
+            # draw_graph(graph, team)
             return
     
     for v in free_nodes:
-        response = game.put_one_troop(v)
-        log(f"putting_one_troop on {v}, " + str(response))
-        graph.update(game)
-        draw_graph(graph, team)
-        return
+        if sum_around_score(v, graph) !=  0 or count_around_freind(v, graph, team) != 0:
+            response = game.put_one_troop(v)
+            log(f"putting_one_troop on {v}, " + str(response))
+            # graph.update(game)
+            # draw_graph(graph, team)
+            return
 
     for v in my_nodes:
         if graph.node[v].is_strategic:
             if graph.node[v].troops + graph.node[v].fort_troops < max_around_enemy(v, graph, team)[0]:
                 response = game.put_one_troop(v)
                 log(f"putting_one_troop on {v}, " + str(response))
-                graph.update(game)
-                draw_graph(graph, team)
+                # graph.update(game)
+                # draw_graph(graph, team)
                 return
         else: 
             if count_around_enemy(v, graph, team) != 0:
                 response = game.put_one_troop(v)
                 log(f"putting_one_troop on {v}, " + str(response))
-                graph.update(game)
-                draw_graph(graph, team)
+                # graph.update(game)
+                # draw_graph(graph, team)
                 return
     
     for v in my_nodes:
         response = game.put_one_troop(v)
         log(f"putting_one_troop on {v}, " + str(response))
-        graph.update(game)
-        draw_graph(graph, team)
+        # graph.update(game)
+        # draw_graph(graph, team)
         return
 
 def turn(game: Game):
