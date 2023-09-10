@@ -45,6 +45,18 @@ def count_around_enemy(v:int, graph: Graph, team: Team) -> int:
             counter += 1
     return counter
 
+def need_troop(v:int, graph: Graph, team: Team) -> int:
+    if graph.node[v].is_strategic:
+        if graph.node[v].troops < max_around_enemy(v, graph, team):
+            return max(min(max_around_enemy(v, graph, team), 10) - graph.node[v].troops, 0)
+        else:
+            return 0
+    else: 
+        if graph.node[v].troops == 1:
+            return 1
+        else:
+            return 0
+
 '''
     Tasks: 
         1. Write the function of check the possibilities
