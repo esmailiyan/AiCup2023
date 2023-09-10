@@ -1,5 +1,6 @@
 import os
 import logging
+from structure import Graph, Team
 
 def log(data:str) -> bool:
     # Set the logging configuration
@@ -8,6 +9,41 @@ def log(data:str) -> bool:
 
     # Log some data
     logging.info(data)
+
+def sum_around_borj(v:int, graph: Graph) -> int:
+    sum_score = 0
+    for u in graph.node[v].adj:
+        sum_score += graph.node[u].score
+    return sum_score
+
+def sum_around_enemy(v:int, graph: Graph, team: Team) -> int:
+    counter = 0
+    for u in graph.node[v].adj:
+        if graph.node[u].owner not in [-1, team.id]:
+            counter += graph.node[u].troops
+    return counter
+
+def max_around_enemy(v:int, graph: Graph, team: Team) -> int:
+    max_enemy = 0
+    for u in graph.node[v].adj:
+        if graph.node[u].owner not in [-1, team.id]:
+            if graph.node[u].troops > max_enemy:
+                max_enemy = graph.node[u].troops
+    return max_enemy
+
+def count_around_freind(v:int, graph: Graph, team: Team) -> int:
+    counter = 0
+    for u in graph.node[v].adj:
+        if graph.node[u].owner == team.id:
+            counter += 1
+    return counter
+
+def count_around_enemy(v:int, graph: Graph, team: Team) -> int:
+    counter = 0
+    for u in graph.node[v].adj:
+        if graph.node[u].owner not in [-1, team.id]:
+            counter += 1
+    return counter
 
 '''
     Tasks: 
