@@ -35,7 +35,7 @@ def initializer(game: Game):
     enemy_neighbors = [v for v in my_neighbors if graph.node[v].owner != -1]
 
     my_nodes.sort(key=lambda v: [graph.node[v].score, -graph.node[v].troops, max_around_enemy(v, graph, team)], reverse=True)
-    free_nodes.sort(key=lambda v: [sum_around_borj(v, graph), count_around_freind(v, graph, team), -count_around_enemy(v, graph, team)], reverse=True)
+    free_nodes.sort(key=lambda v: [sum_around_borj(v, graph), count_around_freind(v, graph, team), -count_around_enemy(v, graph, team), graph.node[v].degree], reverse=True)
     borjs.sort(key=lambda v: [graph.node[v].score, -graph.node[v].degree], reverse=True)
 
     for v in borjs:
