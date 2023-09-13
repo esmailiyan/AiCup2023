@@ -31,6 +31,14 @@ def max_around_enemy(v:int, graph: Graph, team: Team) -> int:
                 max_enemy = graph.node[u].troops
     return max_enemy
 
+def max_around_friend(v:int, graph: Graph, team: Team) -> int:
+    max_friend = 0
+    for u in graph.node[v].adj:
+        if graph.node[u].owner == team.id:
+            if graph.node[u].troops > max_friend:
+                max_friend = graph.node[u].troops
+    return max_friend
+
 def min_around_enemy(v:int, graph: Graph, team: Team) -> int:
     min_enemy = 1000
     for u in graph.node[v].adj:
