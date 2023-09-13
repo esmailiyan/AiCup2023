@@ -31,6 +31,14 @@ def max_around_enemy(v:int, graph: Graph, team: Team) -> int:
                 max_enemy = graph.node[u].troops
     return max_enemy
 
+def min_around_enemy(v:int, graph: Graph, team: Team) -> int:
+    min_enemy = 1000
+    for u in graph.node[v].adj:
+        if graph.node[u].owner not in [-1, team.id]:
+            if graph.node[u].troops < min_enemy:
+                min_enemy = graph.node[u].troops
+    return min_enemy
+
 def count_around_freind(v:int, graph: Graph, team: Team) -> int:
     counter = 0
     for u in graph.node[v].adj:
@@ -44,20 +52,3 @@ def count_around_enemy(v:int, graph: Graph, team: Team) -> int:
         if graph.node[u].owner not in [-1, team.id]:
             counter += 1
     return counter
-
-def need_troop(v:int, graph: Graph, team: Team) -> int:
-    if graph.node[v].is_strategic:
-        if graph.node[v].troops < max_around_enemy(v, graph, team):
-            return max(min(max_around_enemy(v, graph, team), 10) - graph.node[v].troops, 0)
-        else:
-            return 0
-    else: 
-        if graph.node[v].troops == 1:
-            return 1
-        else:
-            return 0
-
-'''
-    Tasks: 
-        1. Write the function of check the possibilities
-'''
