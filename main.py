@@ -113,7 +113,7 @@ def turn(game: Game):
     FIRST_REQUIRED_TROOP = 3
     SECOND_REQUIRED_TROOP = 4
     REQUIRED_BORJ_TROOP = 10
-    MAX_BORJ_TROOP = 20
+    MAX_BORJ_TROOP = 15
 
     nodes = graph.nodes
     my_nodes = [v for v in nodes if graph.node[v].owner == team.id]
