@@ -112,7 +112,7 @@ def turn(game: Game):
     FIRST_REQUIRED_TROOP = 3
     SECOND_REQUIRED_TROOP = 5
     REQUIRED_BORJ_TROOP = 10
-    MAX_BORJ_TROOP = 20
+    MAX_TROOP = 20
 
     nodes = graph.nodes
     my_nodes = [v for v in nodes if graph.node[v].owner == team.id]
@@ -161,7 +161,7 @@ def turn(game: Game):
     my_borjs.sort(key=lambda v: graph.node[v].troops + graph.node[v].fort_troops)
 
     for v in my_borjs: # Upgrade my borjs to max enemy troop
-        if graph.node[v].troops < MAX_BORJ_TROOP:
+        if graph.node[v].troops < MAX_TROOP:
             if graph.node[v].troops + graph.node[v].fort_troops < max_around_enemy(v, graph, team):
                 if put_for_defense > 0:
                     print(game.put_troop(v, min(2, put_for_defense)))
@@ -176,16 +176,17 @@ def turn(game: Game):
                     print(game.put_troop(v, min(1, put_for_defense)))
                     put_for_defense -= min(1, put_for_defense)
     
-    my_nodes.sort(key=lambda v: [int(bool(sum_around_borj(v, graph))), -graph.node[v].troops, -min_around_enemy(v, graph, team)], reverse=True)
+    my_nodes.sort(key=lambda v: [int(bool(sum_around_borj(v, graph))), graph.node[v].troops, -min_around_enemy(v, graph, team)], reverse=True)
 
     attacker = -1
     for v in my_nodes: # Upgrade one of my nodes to attack
         if not graph.node[v].is_strategic:
             if graph.node[v].owner != team.id:
-                if put_for_attack > 0:
-                    attacker = v
-                    print(game.put_troop(v, put_for_attack))
-                    put_for_attack = 0
+                if graph.node[v].troops < MAX_TROOP:
+                    if put_for_attack > 0:
+                        attacker = v
+                        print(game.put_troop(v, put_for_attack))
+                        put_for_attack = 0
     
     game.next_state()
 
