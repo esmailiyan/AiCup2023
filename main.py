@@ -2,7 +2,6 @@ import random
 from math import ceil
 from src.game import Game
 from structure import State, Team, Graph
-from utils import log
 from utils import max_around_enemy, min_around_enemy, max_around_friend
 from utils import sum_around_borj, sum_around_enemy
 from utils import count_around_freind, count_around_enemy

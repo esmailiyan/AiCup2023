@@ -23,15 +23,6 @@ class Node():
         return f"Node:{self.id}\n- owner:{self.owner}\n- troops:{self.troops}\n"
 
 
-# class Situation():
-#     def __init__(self, attacker_damage:int, defendant_damages:int, probability:float):
-#         self.Attacker_damage = attacker_damage
-#         self.Defendant_damages = defendant_damages
-#         self.Probability = probability
-
-#     def __str__(self) -> str:
-#         return f"Attacker damage:{self.Attacker_damage:<3} | Defendant damages:{self.Defendant_damages:<3} | Probability:{self.Probability:.4f}"
-
 class Team():
     def __init__(self):
         self.id = 0
@@ -43,7 +34,7 @@ class Team():
         # ----- Output as string -----
         return f"Team:\n- id:{self.id}\n- state:{self.state}\n- turn_number:{self.turn_number}\n- free_troops:{self.free_troops}\n"
 
-    def update(self, game:Game):
+    def update(self, game: Game):
         # ----- Updating data -----
         self.id = game.get_player_id()['player_id']
         self.free_troops = game.get_number_of_troops_to_put()['number_of_troops']
@@ -61,7 +52,7 @@ class Graph(Node):
         # ----- Output as string -----
         return f"Graph:\n- number of nodes:{len(self.nodes)}\n- strategics:{self.borj}\n"
 
-    def update(self, game:Game):
+    def update(self, game: Game):
         # ----- Get new data -----
         _adj = game.get_adj()
         _nodes = [int(v) for v in _adj.keys()]

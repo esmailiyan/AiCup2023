@@ -1,14 +1,5 @@
 import os
-import logging
 from structure import Graph, Team
-
-def log(data:str) -> bool:
-    # Set the logging configuration
-    log_file = '.log'
-    logging.basicConfig(filename=log_file, level=logging.INFO, format='%(message)s')
-
-    # Log some data
-    logging.info(data)
 
 def sum_around_borj(v:int, graph: Graph) -> int:
     sum_score = 0
