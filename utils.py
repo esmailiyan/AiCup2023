@@ -1,4 +1,3 @@
-import os
 from structure import Graph, Team
 
 def sum_around_borj(v:int, graph: Graph) -> int:
