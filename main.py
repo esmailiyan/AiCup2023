@@ -15,17 +15,18 @@ def initializer(game: Game):
     # ----- Write your code here -----
     # print(f"\initializer:{ceil(team.turn_number/3)}\n")
 
-    REQUIRED_TROOP = 2
+    REQUIRED_TROOP = 3
+    REQUIRED_BORJ_TROOP = 6
 
     nodes = graph.nodes
     my_nodes = [v for v in nodes if graph.node[v].owner == team.id]
     free_nodes = [v for v in nodes if graph.node[v].owner == -1]
     enemy_nodes = [v for v in nodes if graph.node[v].owner not in [-1, team.id]]
-    my_weak_nodes = [v for v in my_nodes if graph.node[v].troops < REQUIRED_TROOP]
+    my_weak_nodes = [v for v in my_nodes if graph.node[v].troops < REQUIRED_TROOP and not graph.node[v].is_strategic]
 
     borjs = [v[0] for v in graph.borj]
     my_borjs = [v for v in borjs if v in my_nodes]
-    my_weak_borjs = [v for v in my_borjs if graph.node[v].troops < max_around_enemy(v, graph, team)]
+    my_weak_borjs = [v for v in my_borjs if graph.node[v].troops < REQUIRED_BORJ_TROOP]
 
     my_neighbors = []
     for v in my_nodes:
@@ -35,7 +36,8 @@ def initializer(game: Game):
     free_neighbors = [v for v in my_neighbors if graph.node[v].owner == -1]
     enemy_neighbors = [v for v in my_neighbors if graph.node[v].owner != -1]
 
-    my_nodes.sort(key=lambda v: [graph.node[v].score, -graph.node[v].troops, max_around_enemy(v, graph, team)], reverse=True)
+    my_nodes.sort(key=lambda v: [-graph.node[v].troops, graph.node[v].score, max_around_enemy(v, graph, team)], reverse=True)
+    my_borjs.sort(key=lambda v: [max_around_enemy(v, graph, team), -graph.node[v].troops, graph.node[v].score], reverse=True)
     free_nodes.sort(key=lambda v: [sum_around_borj(v, graph), count_around_freind(v, graph, team), -count_around_enemy(v, graph, team), graph.node[v].degree], reverse=True)
     borjs.sort(key=lambda v: [graph.node[v].score, -graph.node[v].degree], reverse=True)
 
@@ -47,7 +49,18 @@ def initializer(game: Game):
             game.next_state()
             return
 
-    if team.id == 1: # player 1
+    required_troops = 0
+    for v in my_weak_borjs:
+        required_troops += (REQUIRED_BORJ_TROOP - graph.node[v].troops)
+    for v in my_weak_nodes:
+        required_troops += (REQUIRED_TROOP - graph.node[v].troops)
+    if team.id == 1:
+        required_troops -= len(my_nodes)//4
+        for v in my_borjs:
+            required_troops -= graph.node[v].score
+
+    if team.free_troops > required_troops: 
+        # Get new nodes
         for v in free_nodes:
             if sum_around_borj(v, graph) != 0 or count_around_freind(v, graph, team) != 0:
                 response = game.put_one_troop(v)
@@ -55,50 +68,26 @@ def initializer(game: Game):
                 game.next_state()
                 return
 
-        for v in my_nodes:
-            if graph.node[v].is_strategic:
-                if graph.node[v].troops < max_around_enemy(v, graph, team):
-                    response = game.put_one_troop(v)
-                    print(response)
-                    game.next_state()
-                    return
-            else: 
-                if count_around_enemy(v, graph, team) != 0:
-                    response = game.put_one_troop(v)
-                    print(response)
-                    game.next_state()
-                    return
-
-    else: # Player 2 , 3
-        required_troops = 0
-        for v in my_weak_borjs:
-            required_troops += (max_around_enemy(v, graph, team) - graph.node[v].troops)
-        for v in my_weak_nodes:
-            required_troops += (REQUIRED_TROOP - graph.node[v].troops)
-
-        if team.free_troops > required_troops: 
-            # Get new nodes
-            for v in free_nodes:
-                if sum_around_borj(v, graph) != 0 or count_around_freind(v, graph, team) != 0:
-                    response = game.put_one_troop(v)
-                    print(response)
-                    game.next_state()
-                    return
+    # Strengthening my nodes
+    for v in my_nodes:
+        if graph.node[v].is_strategic:
+            if graph.node[v].troops < max_around_enemy(v, graph, team):
+                response = game.put_one_troop(v)
+                print(response)
+                game.next_state()
+                return
         else: 
-            # Strengthening my nodes
-            for v in my_nodes:
-                if graph.node[v].is_strategic:
-                    if graph.node[v].troops < max_around_enemy(v, graph, team):
-                        response = game.put_one_troop(v)
-                        print(response)
-                        game.next_state()
-                        return
-                else: 
-                    if count_around_enemy(v, graph, team) != 0:
-                        response = game.put_one_troop(v)
-                        print(response)
-                        game.next_state()
-                        return
+            if count_around_enemy(v, graph, team) != 0:
+                response = game.put_one_troop(v)
+                print(response)
+                game.next_state()
+                return
+
+    for v in my_borjs:
+        response = game.put_one_troop(v)
+        print(response)
+        game.next_state()
+        return
 
 def turn(game: Game):
     team.update(game)
