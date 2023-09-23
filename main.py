@@ -28,41 +28,34 @@ def initializer(game: Game):
     free_nodes.sort(key=lambda v: [int(bool(sum_around_borj(v, graph))), count_around_freind(v, graph, team), graph.node[v].score], reverse=True)
     borjs.sort(key=lambda v: [graph.node[v].score, -graph.node[v].degree], reverse=True)
 
-    # ----- Start algorithm -----
-
-    # Selecting one node
+    # ----- Selecting one node -----
     for v in borjs:
         if graph.node[v].owner == -1:
-            response = game.put_one_troop(v)
-            print(response)
+            print(game.put_one_troop(v))
             game.next_state()
             return
 
     for v in free_nodes:
         if sum_around_borj(v, graph) > 0:
-            response = game.put_one_troop(v)
-            print(response)
+            print(game.put_one_troop(v))
             game.next_state()
             return
 
-    # Strengthening my nodes
+    # ----- Strengthening my nodes -----
     for v in my_nodes:
         if graph.node[v].is_strategic:
             if graph.node[v].troops < REQUIRED_BORJ_TROOP:
-                response = game.put_one_troop(v)
-                print(response)
+                print(game.put_one_troop(v))
                 game.next_state()
                 return
         else: 
             if graph.node[v].troops < REQUIRED_NODE_TROOP:
-                response = game.put_one_troop(v)
-                print(response)
+                print(game.put_one_troop(v))
                 game.next_state()
                 return
     
     for v in my_nodes:
-        response = game.put_one_troop(v)
-        print(response)
+        print(game.put_one_troop(v))
         game.next_state()
         return
 
@@ -71,11 +64,11 @@ def turn(game: Game):
     graph.update(game)
     # ----- Write your code here -----
     turn = ceil(team.turn_number/3)-35
-    print(f"\nturn:{turn}\n")
+    # print(f"\nturn:{turn}\n")
 
     global flag
-    FIRST_REQUIRED_TROOP = 3
-    SECOND_REQUIRED_TROOP = 5
+    REQUIRED_NODE_TROOP = 5
+    MAX_NODE_TROOP = 10
     REQUIRED_BORJ_TROOP = 10
     MAX_BORJ_TROOP = 20
 
@@ -83,11 +76,11 @@ def turn(game: Game):
     my_nodes = [v for v in nodes if graph.node[v].owner == team.id]
     free_nodes = [v for v in nodes if graph.node[v].owner == -1]
     enemy_nodes = [v for v in nodes if graph.node[v].owner not in [-1, team.id]]
-    my_weak_nodes = [v for v in my_nodes if graph.node[v].troops < FIRST_REQUIRED_TROOP]
+    # my_weak_nodes = [v for v in my_nodes if graph.node[v].troops < REQUIRED_NODE_TROOP]
 
     borjs = [v[0] for v in graph.borj]
     my_borjs = [v for v in borjs if v in my_nodes]
-    my_weak_borjs = [v for v in my_borjs if graph.node[v].troops < max_around_enemy(v, graph, team)]
+    # my_weak_borjs = [v for v in my_borjs if graph.node[v].troops < max_around_enemy(v, graph, team)]
 
     my_neighbors = []
     for v in my_nodes:
@@ -106,142 +99,124 @@ def turn(game: Game):
         put_for_attack = team.free_troops - put_for_defense
 
     # ----- Locating new troops -----
-    my_borjs.sort(key=lambda v: graph.node[v].score, reverse=True)
+    my_borjs.sort(key=lambda v: [graph.node[v].score, -(graph.node[v].troops + graph.node[v].fort_troops)], reverse=True)
 
-    try:
-        for v in my_borjs: # Upgrade my borjs to required troop
-            if graph.node[v].troops + graph.node[v].fort_troops < REQUIRED_BORJ_TROOP:
-                if put_for_defense > 0: 
-                    print(game.put_troop(v, min(2, put_for_defense)))
-                    put_for_defense -= min(2, put_for_defense)
-    except Exception as e:
-        print(f"ERROR in part 1: {e}")
+    for v in my_borjs: # Upgrade my borjs to required troop
+        if (graph.node[v].troops + graph.node[v].fort_troops) < REQUIRED_BORJ_TROOP:
+            if put_for_defense > 0: 
+                print(game.put_troop(v, min(2, put_for_defense)))
+                put_for_defense -= min(2, put_for_defense)
 
     my_nodes.sort(key=lambda v: [sum_around_borj(v, graph), -graph.node[v].troops], reverse=True)
 
-    try:
-        for v in my_nodes: # Upgrade my nodes to first required troop
-            if not graph.node[v].is_strategic: # Ignore the borjs
-                if graph.node[v].troops < FIRST_REQUIRED_TROOP:
-                    if put_for_defense > 0:
-                        print(game.put_troop(v, min(1, put_for_defense)))
-                        put_for_defense -= min(1, put_for_defense)
-    except Exception as e:
-        print(f"ERROR in part 2: {e}")
+    for v in my_nodes: # Upgrade my nodes to required troop
+        if not graph.node[v].is_strategic: # Ignore the borjs
+            if graph.node[v].troops < REQUIRED_NODE_TROOP:
+                if put_for_defense > 0:
+                    print(game.put_troop(v, 1))
+                    put_for_defense -= 1
 
     my_borjs.sort(key=lambda v: graph.node[v].troops + graph.node[v].fort_troops)
 
-    try:
-        for v in my_borjs: # Upgrade my borjs to max enemy troop
-            if graph.node[v].troops + graph.node[v].fort_troops < MAX_BORJ_TROOP:
-                if graph.node[v].troops + graph.node[v].fort_troops < max_around_enemy(v, graph, team):
-                    if put_for_defense > 0:
-                        print(game.put_troop(v, min(2, put_for_defense)))
-                        put_for_defense -= min(2, put_for_defense)
-    except Exception as e:
-        print(f"ERROR in part 3: {e}")
+    for v in my_borjs: # Upgrade my borjs to max enemy troop
+        if (graph.node[v].troops + graph.node[v].fort_troops) < MAX_BORJ_TROOP:
+            if (graph.node[v].troops + graph.node[v].fort_troops) < max_around_enemy(v, graph, team):
+                if put_for_defense > 0:
+                    print(game.put_troop(v, min(2, put_for_defense)))
+                    put_for_defense -= min(2, put_for_defense)
 
     my_nodes.sort(key=lambda v: [sum_around_borj(v, graph), -graph.node[v].troops], reverse=True)
 
-    try:
-        for v in my_nodes: # Upgrade my nodes to second required troop
-            if not graph.node[v].is_strategic: # Ignore the borjs
-                if graph.node[v].troops < SECOND_REQUIRED_TROOP:
-                    if put_for_defense > 0:
-                        print(game.put_troop(v, min(1, put_for_defense)))
-                        put_for_defense -= min(1, put_for_defense)
-    except Exception as e:
-        print(f"ERROR in part 4: {e}")
+    for v in my_nodes: # Upgrade my nodes to max troop
+        if not graph.node[v].is_strategic: # Ignore the borjs
+            if graph.node[v].troops < MAX_NODE_TROOP:
+                if put_for_defense > 0:
+                    print(game.put_troop(v, 1))
+                    put_for_defense -= 1
 
-    my_nodes.sort(key=lambda v: [int(bool(sum_around_borj(v, graph))), graph.node[v].troops, -min_around_enemy(v, graph, team)], reverse=True)
+    if put_for_defense > 0: # Add troops for attack
+        put_for_attack += put_for_defense
+        put_for_defense = 0
 
-    try:
-        for v in my_borjs:
-            if graph.node[v].troops + graph.node[v].fort_troops < REQUIRED_BORJ_TROOP:
-                if put_for_attack > 0:
-                    print(game.put_troop(v, put_for_attack))
-                    put_for_attack = 0
-                
-        for v in my_nodes: # Upgrade one of my nodes to attack
-            if not graph.node[v].is_strategic:
-                if put_for_attack > 0:
-                    print(game.put_troop(v, put_for_attack))
-                    put_for_attack = 0
-    except Exception as e:
-        print(f"ERROR in part 5: {e}")
+    # Be ready for attack!
+    my_nodes.sort(key=lambda v: graph.node[v].troops, reverse=True)
+    my_borjs.sort(key=lambda v: graph.node[v].troops + graph.node[v].fort_troops)
 
+    for v in my_borjs: # Defend our weak borjs
+        if (graph.node[v].troops + graph.node[v].fort_troops) < REQUIRED_BORJ_TROOP:
+            if put_for_attack > 0:
+                print(game.put_troop(v, put_for_attack))
+                put_for_attack = 0
+            
+    for v in my_nodes: # Upgrade one of my nodes to attack
+        if not graph.node[v].is_strategic:
+            if put_for_attack > 0:
+                print(game.put_troop(v, put_for_attack))
+                put_for_attack = 0
+
+    graph.update(game)
     game.next_state()
 
     # ----- Attack -----
+    attack_options = []
+    for v in my_nodes:
+        for u in graph.node[v].adj:
+            if u in enemy_neighbors:
+                attack_options.append((v, u))
+
+    attack_options.sort(key=lambda x: [graph.node[x[0]].troops / (graph.node[x[1]].troops + graph.node[x[1]].fort_troops), graph.node[x[0]].troops], reverse=True)
+
+    mark = [False for v in nodes]
+    selected_attack = []
+
+    for (v, u) in attack_options:
+        if not graph.node[v].is_strategic:
+            if not mark[v] and not mark[u]:
+                selected_attack.append((v, u))
+                mark[v] = mark[u] = True
+
+    for (v, u) in selected_attack:
+        if graph.node[v].troops >= REQUIRED_NODE_TROOP:
+            if graph.node[u].owner != team.id:
+                print(game.attack(v, u, 1.2, 0.4))
+    
     graph.update(game)
-
-    try:
-        attack_options = []
-        for v in my_nodes:
-            for u in graph.node[v].adj:
-                if u in enemy_neighbors:
-                    attack_options.append((v, u))
-
-        attack_options.sort(key=lambda x: [graph.node[x[0]].troops, graph.node[x[0]].troops / (graph.node[x[1]].troops + graph.node[x[1]].fort_troops)], reverse=True)
-
-        for (v, u) in attack_options:
-            if graph.node[v].is_strategic:
-                if graph.node[v].troops + graph.node[v].fort_troops >= REQUIRED_BORJ_TROOP:
-                    if graph.node[u].owner != team.id:
-                        print(game.attack(v, u, 3, 0.2))
-                        graph.update(game)
-            else:
-                if graph.node[v].troops + graph.node[v].fort_troops >= FIRST_REQUIRED_TROOP:
-                    if graph.node[u].owner != team.id:
-                        print(game.attack(v, u, 1.0001, 0.5))
-                        graph.update(game)
-    except Exception as e:
-        print(f"ERROR in part 6&7: {e}")
-
     game.next_state()
 
     # ----- Move troops -----
+
+    # moved = False
+    # my_borjs.sort(key=lambda v: graph.node[v].troops)
+    # my_nodes.sort(key=lambda v: graph.node[v].troops)
+
+    # move_options = []
+    # for v in my_borjs:
+    #     if graph.node[v].troops + graph.node[v].fort_troops < REQUIRED_BORJ_TROOP:
+    #         move_options.append(v)
+    # for v in my_nodes:
+    #     if graph.node[v].troops < REQUIRED_NODE_TROOP:
+    #         move_options.append(v)
+
+    # for v in move_options:
+    #     if not moved:
+    #         reachable = game.get_reachable(v)['reachable']
+    #         reachable.sort(key=lambda v: [-int(graph.node[v].is_strategic), graph.node[v].troops], reverse=True)
+    #         for u in reachable:
+    #             if graph.node[u].troops - graph.node[v].troops > 2:
+    #                 print(game.move_troop(u, v, (graph.node[u].troops - graph.node[v].troops)//2))
+    #                 moved = True
+    #                 break
+                    
     graph.update(game)
-
-    try:
-        moved = False
-        my_borjs.sort(key=lambda v: graph.node[v].troops)
-        my_nodes.sort(key=lambda v: graph.node[v].troops)
-
-        move_options = []
-        for v in my_borjs:
-            if graph.node[v].troops + graph.node[v].fort_troops < REQUIRED_BORJ_TROOP:
-                move_options.append(v)
-        for v in my_nodes:
-            if graph.node[v].troops < FIRST_REQUIRED_TROOP:
-                move_options.append(v)
-
-        for v in move_options:
-            reachable = game.get_reachable(v)['reachable']
-            reachable.sort(key=lambda v: [-int(graph.node[v].is_strategic), graph.node[v].troops], reverse=True)
-            for u in reachable:
-                if graph.node[u].troops - graph.node[v].troops > 2:
-                    if not moved:
-                        print(game.move_troop(u, v, (graph.node[u].troops - graph.node[v].troops)//2))
-                        moved = True
-                        graph.update(game)
-    except Exception as e:
-        print(f"ERROR in part 8: {e}")
-
     game.next_state()
 
     # ----- Fort -----
-    graph.update(game)
-
-    my_borjs.sort(key=lambda v: graph.node[v].troops, reverse=True)
+    my_borjs.sort(key=lambda v: graph.node[v].troops)
     
-    try:
-        if not flag and len(my_borjs) != 0:
-            v = my_borjs[0]
-            if graph.node[v].troops > 4:
-                print(game.fort(v, 4))
+    for v in my_borjs:
+        if not flag:
+            if graph.node[v].troops > 5:
+                print(game.fort(v, 5))
                 flag = True
-    except Exception as e:
-        print(f"ERROR in part 9: {e}")
 
-    game.next_state() # Go next turn
+    game.next_state()
