@@ -194,11 +194,11 @@ def turn(game: Game):
             if (graph.node[v].troops + graph.node[v].fort_troops) < REQUIRED_BORJ_TROOP:
                 reachable = game.get_reachable(v)['reachable']
                 reachable.sort(key=lambda v: [-int(graph.node[v].is_strategic), graph.node[v].troops], reverse=True)
-            for u in reachable:
-                if graph.node[v].troops - graph.node[u].troops > 2:
-                    print(game.move_troop(v, u, (graph.node[v].troops - graph.node[u].troops)//2))
-                    move = True
-                    break
+                for u in reachable:
+                    if graph.node[v].troops - graph.node[u].troops > 2:
+                        print(game.move_troop(v, u, (graph.node[v].troops - graph.node[u].troops)//2))
+                        move = True
+                        break
 
     graph.update(game)
     game.next_state()
