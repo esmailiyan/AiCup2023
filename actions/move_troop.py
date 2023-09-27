@@ -2,8 +2,8 @@ from src.game import Game
 
 from structure import State, Team, Graph
 
-REQUIRED_NODE_TROOP = 3
-MAX_NODE_TROOP = 5
+REQUIRED_NODE_TROOP = 4
+MAX_NODE_TROOP = 6
 REQUIRED_BORJ_TROOP = 10
 MAX_BORJ_TROOP = 20
 

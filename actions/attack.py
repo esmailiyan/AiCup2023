@@ -3,8 +3,8 @@ from src.game import Game
 
 from structure import State, Team, Graph
 
-REQUIRED_NODE_TROOP = 3
-MAX_NODE_TROOP = 5
+REQUIRED_NODE_TROOP = 4
+MAX_NODE_TROOP = 6
 REQUIRED_BORJ_TROOP = 10
 MAX_BORJ_TROOP = 20
 
@@ -32,13 +32,15 @@ def attack(game:Game, graph:Graph, team:Team):
         if graph.node[v].is_strategic:
             if (graph.node[v].troops + graph.node[v].fort_troops) >= REQUIRED_BORJ_TROOP:
                 if graph.node[u].owner != team.id:
-                    print(game.attack(v, u, 3, 0.2))
-                    graph.update(game)
+                    if graph.node[v].troops >= 2:
+                        print(game.attack(v, u, 3, 0.2))
+                        graph.update(game)
         else:
             if (graph.node[v].troops + graph.node[v].fort_troops) >= REQUIRED_NODE_TROOP:
                 if graph.node[u].owner != team.id:
-                    print(game.attack(v, u, 1.1, 0.5))
-                    graph.update(game)
+                    if graph.node[v].troops >= 2:
+                        print(game.attack(v, u, 1.1, 0.5))
+                        graph.update(game)
 
     # the end of action
     return None
