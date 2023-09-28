@@ -7,7 +7,8 @@ from actions.attack import attack
 from actions.move_troop import move_troop
 from actions.fort import fort
 
-flag = False
+forted = False
+do_fort = False
 team = Team()
 graph = Graph()
 
@@ -22,13 +23,14 @@ def turn(game: Game):
     team.update(game)
     graph.update(game)
     # ----- Start here -----
-    global flag
+    global forted
+    global do_fort
     # ----- Put troop -----
     put_troop(game, graph, team)
     game.next_state()
     # ----- Attack -----
     graph.update(game)
-    attack(game, graph, team)
+    do_fort = attack(game, graph, team)
     game.next_state()
     # ----- Move troops -----
     graph.update(game)
@@ -36,6 +38,7 @@ def turn(game: Game):
     game.next_state()
     # ----- Fort -----
     graph.update(game)
-    if not flag:
-        flag = fort(game, graph, team)
+    if not forted:
+        if do_fort:
+            forted = fort(game, graph, team)
     game.next_state()
